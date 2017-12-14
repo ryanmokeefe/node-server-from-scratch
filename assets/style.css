@@ -1,0 +1,18 @@
+body {
+  font-family: Comic Sans MS;
+  color: #504213;
+  background: #fce564;
+  text-align: center;
+}
+
+ul,
+li {
+  margin: 0 auto;
+  width: 40%;
+  list-style-type: none;
+}
+
+li {
+  color: rgb(252, 144, 12);
+  text-align: left;
+}
