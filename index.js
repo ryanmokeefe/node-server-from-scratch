@@ -10,8 +10,10 @@ http
   .listen(PORT, () => console.log(`Server running at http://127.0.0.1:${PORT}/`))
 
 function requestHandler (request, response) {
+
+  // sets the base filepath, a relative path beginning with the current directory
   let filePath = './'
-  
+
   // URL Routing
   switch (request.url) {
     case '/': 
@@ -25,7 +27,7 @@ function requestHandler (request, response) {
       filePath += 'assets/taco-crunch.wav'
       break
     case '/assets/style.css': 
-      filePath += "assets/style.css"
+      filePath += 'assets/style.css'
       break
     default:
       filePath += '404.html'
@@ -35,17 +37,17 @@ function requestHandler (request, response) {
   // obtain the file extension using the path dependency
   const fileExtension = path.extname(filePath).toLowerCase()
 
-  // Defines the content type of the file being transmitted back to the browser
-  // This information lives on the header
-  // let contentType = 'text/html'
+  // We need to define the content type of the file being transmitted back to the browser
+  // This information will be set on the response header
+  
+  // Sets the content type to one of the types defined in mimeTypes.js or if it isn't found
+  // sets the default text to HTML
+  let contentType = mimeTypes[fileExtension] || 'text/html'
 
-  // Sets the content type to one of the types defined above or if it isn't found
-  // 
-  let contentType = mimeTypes[fileExtension] || "text/html"
-
-  // will attempt to 
+  // Will attempt to read a file from the file-system this program is running on
   fs.readFile(filePath, function (error, content) {
     if (!error) {
+      // Writes status code 200 (the everything is OK status) to the header
       response.writeHead(200, {'Content-Type': contentType})
       response.end(content, 'utf-8')
     } else {
