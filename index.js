@@ -3,12 +3,19 @@ const fs        = require('fs')
 const path      = require('path')
 const mimeTypes = require('./mimeTypes')
 
+//the port that our server will run on
 const PORT = 8125
 
+// create an instance of an http server
 http
   .createServer(requestHandler)
   .listen(PORT, () => console.log(`Server running at http://127.0.0.1:${PORT}/`))
 
+// since the client-server contract operates on the request-response paradigm,
+// we'll have a single function concerned with the request received by the 
+// server, and the response that it will provide to that request
+
+// the function will have parameters to represent the request and response
 function requestHandler (request, response) {
 
   // sets the base filepath, a relative path beginning with the current directory
@@ -47,8 +54,11 @@ function requestHandler (request, response) {
   // Will attempt to read a file from the file-system this program is running on
   fs.readFile(filePath, function (error, content) {
     if (!error) {
-      // Writes status code 200 (the everything is OK status) to the header
+
+      // Writes status code 200 (the everything is OK status) and file type to the header
       response.writeHead(200, {'Content-Type': contentType})
+
+      // writes requested file (`content`) to the response body
       response.end(content, 'utf-8')
     } else {
       // Error NO ENTity (ENOENT), meaning 'no such file'
@@ -58,10 +68,11 @@ function requestHandler (request, response) {
           //write the type of file content to the response header
           response.writeHead(404, {'Content-Type': contentType})
           
-          // writes content to the response body
+          // writes 404.html to the response body
           response.end(fileContent404, 'utf-8')
         })
       } else {
+        // Writes status 500 (internal server error) in case of another type of error
         response.writeHead(500)
         response.end(`Sorry, check with the site admin for error: ${error.code}...\n`)
         response.end()
